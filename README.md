@@ -22,6 +22,8 @@ Created the project primarily to explore elm and write an end to end application
 Getting Started - https://guide.elm-lang.org/
 I started by tweeking the clock example and finding why way to a MVP.
 
+![demo](https://github.com/varunvasudevan94/proTimer/blob/main/ProTimer.jpeg)
+
 # Pros
 1. Certain things which only functional language gives
 2. Easy error messages
