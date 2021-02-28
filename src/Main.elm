@@ -5,6 +5,8 @@
 --
 -- First attempt at elm so not the perfect code
 
+module Main exposing (..)
+
 import Browser
 import Html exposing (Html, div, button)
 import Html.Events exposing (onClick)
