@@ -8,11 +8,15 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, div, button, text)
-import Html.Events exposing (onClick)
+import Css exposing (..)
+import Html
+import Html.Styled exposing (..)
 import Task
 import Time
 import Time exposing (posixToMillis)
+import Html.Styled.Events exposing (onClick)
+import Html.Styled exposing (button, text)
+import Html.Styled.Attributes exposing (css, href, src)
 import String
 
 -- CONSTANTS
@@ -24,13 +28,21 @@ gs_play_not_started = 0
 gs_game_started_p1 = 1
 gs_game_started_p2 = 2
 
+
+theme : { black : Color, white : Color }
+theme =
+    { black = hex "F9F4F3"
+    , white = hex "3B3230"
+    }
+
+
 -- MAIN
 
 
 main =
   Browser.element
     { init = init
-    , view = view
+    , view = view >> toUnstyled
     , update = update
     , subscriptions = subscriptions
     }
@@ -134,8 +146,8 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-  div []
-    [button [onClick TogglePlayer1] [ text (formatSecondsToDisplay (getSecondsLeft model.timer1 ))],
-     button [onClick TogglePlayer2] [ text (formatSecondsToDisplay (getSecondsLeft model.timer2 ))]
+  div [css [height (vh 100)]]
+    [button [onClick TogglePlayer1, css [width (pct 100), height (pct 50), color theme.white, backgroundColor theme.black]] [ text (formatSecondsToDisplay (getSecondsLeft model.timer1 ))],
+     button [onClick TogglePlayer2, css [width (pct 100), height (pct 50), color theme.black, backgroundColor theme.white]] [ text (formatSecondsToDisplay (getSecondsLeft model.timer2 ))]
     ]
 
