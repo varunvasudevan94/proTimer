@@ -42,14 +42,13 @@ type alias Model =
   { 
     timer1: Int,
     timer2: Int,
-    p1: Int,
-    p2: Int
+    player: Int
   }
 
 
 init : () -> (Model, Cmd Msg)
 init _ =
-  ( Model counter_start counter_start gs_play_not_started gs_play_not_started
+  ( Model counter_start counter_start gs_play_not_started
   , Cmd.batch
       [ 
         Task.perform Tick Time.now
@@ -61,7 +60,7 @@ init _ =
 -- UPDATE
 
 type Msg
-  = Tick Time.Posix | TogglePlayer
+  = Tick Time.Posix | TogglePlayer1 | TogglePlayer2
 
 
 
@@ -69,17 +68,30 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     Tick newTime ->
-      if (model.p1 == gs_play_not_started) && 
-      (model.p2 == gs_play_not_started) then
+      if model.player == gs_play_not_started then
       ( model
       , Cmd.none
       )
       else
-      ( { model | timer1 = model.timer1 + 1 }
-      , Cmd.none
-      )
-    TogglePlayer -> 
-       ({model | timer1=model.timer1+5}, Cmd.none) 
+        if model.player == gs_game_started_p1 then
+          ( { model | timer1 = model.timer1 + 1 }
+          , Cmd.none
+          )
+        else
+          ( { model | timer2 = model.timer2 + 1 }
+          , Cmd.none
+          ) 
+        
+    TogglePlayer1 -> 
+        if model.player == gs_play_not_started then
+          ({model | player=gs_game_started_p1}, Cmd.none) 
+        else
+          ({model | player=gs_game_started_p2}, Cmd.none)
+    TogglePlayer2 -> 
+        if model.player == gs_play_not_started then
+          (model, Cmd.none) 
+        else
+          ({model | player=gs_game_started_p1}, Cmd.none)
 
 -- SUBSCRIPTIONS
 
@@ -95,7 +107,7 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
   div []
-    [button [] [ text (String.fromInt model.timer1 )],
-     button [] [ text (String.fromInt model.timer2 )]
+    [button [onClick TogglePlayer1] [ text (String.fromInt model.timer1 )],
+     button [onClick TogglePlayer2] [ text (String.fromInt model.timer2 )]
     ]
 
