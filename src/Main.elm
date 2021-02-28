@@ -8,16 +8,16 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, div, button)
+import Html exposing (Html, div, button, text)
 import Html.Events exposing (onClick)
-import Svg exposing (..)
-import Svg.Attributes exposing (..)
 import Task
 import Time
 import Time exposing (posixToMillis)
 import String
 
 -- CONSTANTS
+
+
 max_seconds = 180
 counter_start = 0
 gs_play_not_started = 0
@@ -56,6 +56,8 @@ init _ =
   )
 
 -- HELPER METHODS
+
+
 getSecondsLeft : Int -> Int
 getSecondsLeft second = max_seconds - second
 
@@ -78,6 +80,7 @@ formatSecondsToDisplay counter =
   (formatInteger (getMinutes counter)) ++ ":" ++ (formatInteger (getSeconds counter))
 
 -- UPDATE
+
 
 type Msg
   = Tick Time.Posix | TogglePlayer1 | TogglePlayer2
