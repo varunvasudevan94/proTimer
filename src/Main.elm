@@ -16,7 +16,7 @@ import Time exposing (posixToMillis)
 import String
 
 -- CONSTANTS
-max_seconds = 90
+max_seconds = 180
 counter_start = 0
 gs_play_not_started = 0
 gs_game_started_p1 = 1
@@ -32,8 +32,6 @@ main =
     , update = update
     , subscriptions = subscriptions
     }
-
-
 
 -- MODEL
 
@@ -55,7 +53,27 @@ init _ =
       ]
   )
 
+-- HELPER METHODS
+getSecondsLeft : Int -> Int
+getSecondsLeft second = max_seconds - second
 
+getSeconds : Int -> Int
+getSeconds counter = remainderBy 60 counter
+
+getMinutes : Int -> Int
+getMinutes counter = counter // 60 -- Buddy this is integer division
+
+formatInteger : Int -> String
+formatInteger integer = 
+  if integer < 10 then 
+    "0" ++ String.fromInt(integer)
+  else
+    String.fromInt(integer)
+    
+
+formatSecondsToDisplay : Int -> String
+formatSecondsToDisplay counter = 
+  (formatInteger (getMinutes counter)) ++ ":" ++ (formatInteger (getSeconds counter))
 
 -- UPDATE
 
@@ -68,19 +86,24 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     Tick newTime ->
-      if model.player == gs_play_not_started then
-      ( model
-      , Cmd.none
-      )
+      if (model.timer1 == max_seconds || model.timer2 == max_seconds) then
+        ( model
+        , Cmd.none
+        )
       else
-        if model.player == gs_game_started_p1 then
-          ( { model | timer1 = model.timer1 + 1 }
+        if model.player == gs_play_not_started then
+          ( model
           , Cmd.none
           )
         else
-          ( { model | timer2 = model.timer2 + 1 }
-          , Cmd.none
-          ) 
+          if model.player == gs_game_started_p1 then
+            ( { model | timer1 = model.timer1 + 1 }
+            , Cmd.none
+            )
+          else
+            ( { model | timer2 = model.timer2 + 1 }
+            , Cmd.none
+            ) 
         
     TogglePlayer1 -> 
         if model.player == gs_play_not_started then
@@ -107,7 +130,7 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
   div []
-    [button [onClick TogglePlayer1] [ text (String.fromInt model.timer1 )],
-     button [onClick TogglePlayer2] [ text (String.fromInt model.timer2 )]
+    [button [onClick TogglePlayer1] [ text (formatSecondsToDisplay (getSecondsLeft model.timer1 ))],
+     button [onClick TogglePlayer2] [ text (formatSecondsToDisplay (getSecondsLeft model.timer2 ))]
     ]
 
